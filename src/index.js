@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const App = () => {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(3);
   const [visible, setVisible] = useState(true);
 
   if (visible) {
@@ -16,9 +16,8 @@ const App = () => {
         <button className='btn btn-danger' onClick={() => setVisible((false))}>
           hidden
         </button>
-        <ClassCounter value={value} />
-        <HookCounter value={value} />
-        <Notification />
+
+        <PlanetInfo id={value} />
       </div>
     );
   } else {
@@ -27,66 +26,26 @@ const App = () => {
 
 }
 
-const HookCounter = ({ value }) => {
+const PlanetInfo = ({ id }) => {
 
-  //? All changes
-  // useEffect(() => {
-  //   console.log('useEffect');
-  // }) 
-
-  //? Only create component
-  // useEffect(() => {
-  //   console.log('useEffect');
-  // }, [])
-
-  //? Change specific variables
-  // useEffect(() => {
-  //   console.log('useEffect');
-
-  //   return () => console.log('clean');
-  // }, [value])
-
-  //? Comparing with life cycle methods
-  useEffect(() => console.log('mount'), [])
-  useEffect(() => console.log('update'))
-  useEffect(() => () => console.log('unmount'), [])
-
-  return <p>{value}</p>
-}
-
-const Notification = () => {
-
-  const [visible, setVisible] = useState(true);
+  const [namePlanet, setNamePlanet] = useState(null);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setVisible(false), 2500);
+    let cancelled = false;
+    fetch(`https://swapi.dev/api/planets/${id}`)
+      .then((res) => res.json())
+      .then(data => !cancelled && setNamePlanet(data.name))
 
-    return () => clearTimeout(timeout);
-  }, [])
+    return () => cancelled = true;
+  }, [id])
+
+  const content = namePlanet ? `${id} - ${namePlanet}` : null;
 
   return (
     <div>
-      {visible && <p>Hello</p>}
-    </div>);
-}
-
-class ClassCounter extends Component {
-
-  componentDidMount() {
-    console.log('class: Mount');
-  }
-
-  componentDidUpdate() {
-    console.log('class: Update');
-  }
-
-  componentWillUnmount() {
-    console.log('class: Unmount');
-  }
-
-  render() {
-    return null;
-  }
+      {content}
+    </div>
+  )
 }
 
 root.render(
