@@ -18,6 +18,7 @@ const App = () => {
         </button>
         <ClassCounter value={value} />
         <HookCounter value={value} />
+        <Notification />
       </div>
     );
   } else {
@@ -39,13 +40,34 @@ const HookCounter = ({ value }) => {
   // }, [])
 
   //? Change specific variables
-  useEffect(() => {
-    console.log('useEffect');
+  // useEffect(() => {
+  //   console.log('useEffect');
 
-    return () => console.log('clean');
-  }, [value])
+  //   return () => console.log('clean');
+  // }, [value])
+
+  //? Comparing with life cycle methods
+  useEffect(() => console.log('mount'), [])
+  useEffect(() => console.log('update'))
+  useEffect(() => () => console.log('unmount'), [])
 
   return <p>{value}</p>
+}
+
+const Notification = () => {
+
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setVisible(false), 2500);
+
+    return () => clearTimeout(timeout);
+  }, [])
+
+  return (
+    <div>
+      {visible && <p>Hello</p>}
+    </div>);
 }
 
 class ClassCounter extends Component {
