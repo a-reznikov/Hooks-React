@@ -26,8 +26,7 @@ const App = () => {
 
 }
 
-const PlanetInfo = ({ id }) => {
-
+const usePlanetInfo = (id) => {
   const [namePlanet, setNamePlanet] = useState(null);
 
   useEffect(() => {
@@ -39,11 +38,16 @@ const PlanetInfo = ({ id }) => {
     return () => cancelled = true;
   }, [id])
 
-  const content = namePlanet ? `${id} - ${namePlanet}` : null;
+  return namePlanet;
+}
+
+const PlanetInfo = ({ id }) => {
+
+  const namePlanet = usePlanetInfo(id);
 
   return (
     <div>
-      {content}
+      {id} - {namePlanet}
     </div>
   )
 }
